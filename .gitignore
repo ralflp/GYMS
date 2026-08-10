@@ -15,3 +15,8 @@ web_admin_panel/build/
 web_admin_panel/.dart_tool/
 web_admin_panel/.flutter-plugins
 web_admin_panel/.flutter-plugins-dependencies
+backend/dist/
+gym_admin_panel/build/
+gym_admin_panel/.dart_tool/
+gym_admin_panel/.flutter-plugins
+gym_admin_panel/.flutter-plugins-dependencies

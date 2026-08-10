@@ -11,7 +11,11 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
 
   if (!token) return res.sendStatus(401);
 
-  jwt.verify(token, process.env.JWT_SECRET || 'secret123', (err: any, user: any) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET must be defined in environment variables');
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err: any, user: any) => {
     if (err) return res.sendStatus(403);
     req.user = user;
     next();

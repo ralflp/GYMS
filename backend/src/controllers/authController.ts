@@ -20,9 +20,13 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET must be defined in environment variables');
+    }
+
     const token = jwt.sign(
       { id: user.id, email: user.email, role: 'super_admin' },
-      process.env.JWT_SECRET || 'secret123',
+      process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
 
