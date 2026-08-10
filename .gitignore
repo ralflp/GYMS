@@ -1,0 +1,17 @@
+node_modules/
+backend/node_modules/
+web_admin_panel/build/
+web_admin_panel/.dart_tool/
+web_admin_panel/.flutter-plugins
+web_admin_panel/.flutter-plugins-dependencies
+web_admin_panel/build/
+web_admin_panel/.dart_tool/
+web_admin_panel/.flutter-plugins
+web_admin_panel/.flutter-plugins-dependencies
+node_modules/
+backend/node_modules/
+backend/dist/
+web_admin_panel/build/
+web_admin_panel/.dart_tool/
+web_admin_panel/.flutter-plugins
+web_admin_panel/.flutter-plugins-dependencies
