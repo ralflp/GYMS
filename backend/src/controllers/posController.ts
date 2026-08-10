@@ -63,13 +63,34 @@ export const processSale = async (req: TenantRequest, res: Response) => {
         const durationDays = memResult.rows[0].duration_days;
 
         // Add or extend membership for client
-        await client.query(
+        const newMembership = await client.query(
           `INSERT INTO client_memberships (client_id, membership_id, start_date, end_date)
-           VALUES ($1, $2, CURRENT_DATE, CURRENT_DATE + $3 * INTERVAL '1 day')`,
+           VALUES ($1, $2, CURRENT_DATE, CURRENT_DATE + $3 * INTERVAL '1 day') RETURNING start_date, end_date`,
           [clientId, item.id, durationDays]
         );
 
-        // TODO: In phase 3, trigger Hikvision API call here to grant access based on start/end date
+        // Fetch client's Hikvision ID
+        const clientResult = await client.query('SELECT face_id FROM clients WHERE id = $1', [clientId]);
+        const faceId = clientResult.rows[0]?.face_id;
+
+        if (faceId) {
+          // Trigger Hikvision update via WebSocket to the Local IoT Controller
+          const io = require('../config/socket').getIo();
+
+          // Format dates as YYYY-MM-DD avoiding UTC shift issues with toISOString
+          const sDate = new Date(newMembership.rows[0].start_date);
+          const startDate = `${sDate.getFullYear()}-${String(sDate.getMonth() + 1).padStart(2, '0')}-${String(sDate.getDate()).padStart(2, '0')}`;
+
+          const eDate = new Date(newMembership.rows[0].end_date);
+          const endDate = `${eDate.getFullYear()}-${String(eDate.getMonth() + 1).padStart(2, '0')}-${String(eDate.getDate()).padStart(2, '0')}`;
+
+          console.log(`Emitting update_membership to room tenant_${req.tenantId} for face_id ${faceId}`);
+          io.to(`tenant_${req.tenantId}`).emit('update_membership', {
+            hikvisionId: faceId,
+            startDate,
+            endDate
+          });
+        }
       }
     }
 

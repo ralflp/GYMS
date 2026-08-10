@@ -2,12 +2,13 @@ import { Request, Response, NextFunction } from 'express';
 import { query } from '../config/db';
 
 export interface TenantRequest extends Request {
+  tenantId?: string;
   tenantDb?: string;
 }
 
 export const resolveTenant = async (req: TenantRequest, res: Response, next: NextFunction) => {
   // We expect a header 'X-Tenant-ID' or similar
-  const tenantId = req.headers['x-tenant-id'];
+  const tenantId = req.headers['x-tenant-id'] as string;
 
   if (!tenantId) {
     return res.status(400).json({ message: 'Tenant ID is required' });
@@ -25,6 +26,7 @@ export const resolveTenant = async (req: TenantRequest, res: Response, next: Nex
       return res.status(403).json({ message: `Tenant is ${tenant.status}` });
     }
 
+    req.tenantId = tenantId;
     req.tenantDb = tenant.db_name;
     next();
   } catch (error) {

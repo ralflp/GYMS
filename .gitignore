@@ -20,3 +20,5 @@ gym_admin_panel/build/
 gym_admin_panel/.dart_tool/
 gym_admin_panel/.flutter-plugins
 gym_admin_panel/.flutter-plugins-dependencies
+iot_controller/node_modules/
+iot_controller/dist/
