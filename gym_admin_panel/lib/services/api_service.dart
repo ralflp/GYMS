@@ -45,6 +45,24 @@ class ApiService {
     throw Exception('Failed to load products');
   }
 
+  Future<void> createClient(String firstName, String lastName, String email, String phone, String faceId) async {
+    final headers = await _getHeaders();
+    final response = await http.post(
+      Uri.parse('$baseUrl/gym/clients'),
+      headers: headers,
+      body: jsonEncode({
+        'first_name': firstName,
+        'last_name': lastName,
+        'email': email,
+        'phone': phone,
+        'face_id': faceId,
+      }),
+    );
+    if (response.statusCode != 201) {
+      throw Exception('Failed to create client');
+    }
+  }
+
   Future<List<Membership>> getMemberships() async {
     final headers = await _getHeaders();
     final response = await http.get(Uri.parse('$baseUrl/gym/memberships'), headers: headers);
